@@ -25,6 +25,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// MyAppState:
+/// generates WordPairs and saves them if favorited
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
 
@@ -50,13 +52,15 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+/// _MyHomePageState:
+/// Allows for a page changing navigation rail and the main page
 class _MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     Widget page;
-    switch (selectedIndex) {
+    switch (selectedIndex) { // functionality for page navigation
       case 0:
         page = GeneratorPage();
         break;
@@ -75,11 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: NavigationRail(
                 extended: constraints.maxWidth >= 600,
                 destinations: [
-                  NavigationRailDestination(
+                  NavigationRailDestination( // navigation to generation page
                     icon: Icon(Icons.home),
                     label: Text('Home'),
                   ),
-                  NavigationRailDestination(
+                  NavigationRailDestination( // navigation to favorites page
                     icon: Icon(Icons.favorite),
                     label: Text('Favorites'),
                   ),
@@ -105,6 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+/// GeneratorPage:
+/// The default page, displays and generates WordPairs
+/// Also allows for toggle favoriting of terms
 class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -122,20 +129,20 @@ class GeneratorPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BigCard(pair: pair),
-          SizedBox(
+          BigCard(pair: pair), // generated term
+          SizedBox( // padding
             height: 10,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton.icon(
+              ElevatedButton.icon( // favorite button
                   onPressed: () {
                     appState.toggleFavorite();
                   },
                   icon: Icon(icon),
                   label: Text('Like')),
-              ElevatedButton(
+              ElevatedButton( // generation button
                 onPressed: () {
                   appState.getNext();
                 },
@@ -151,16 +158,18 @@ class GeneratorPage extends StatelessWidget {
 
 class FavoritesPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _FavoritesPage();
+  State<StatefulWidget> createState() => _FavoritesPageState();
 }
 
-class _FavoritesPage extends State<FavoritesPage> {
+/// _FavoritesPageState:
+/// The favorites page where favorited terms are shown as a list
+class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var favs = appState.favorites;
     final theme = Theme.of(context);
-
+ 
     if (favs.isEmpty) {
       return Center(
         child: Text('No favorites yet.', 
@@ -174,11 +183,11 @@ class _FavoritesPage extends State<FavoritesPage> {
         Padding(
           padding: const EdgeInsets.all(20),
           child: Text('You have '
-              '${appState.favorites.length} favorites:',
+              '${favs.length} favorites:',
               style: TextStyle(color:theme.colorScheme.primary),
               ),
         ),
-        for (var pair in appState.favorites)
+        for (var pair in favs)
           ListTile(
             leading: Icon(Icons.favorite),
             title: Text(pair.asLowerCase,),
@@ -188,6 +197,8 @@ class _FavoritesPage extends State<FavoritesPage> {
   }
 }
 
+/// BigCard:
+/// Widget used to create Cards that are used to display WordPairs
 class BigCard extends StatelessWidget {
   const BigCard({
     super.key,
