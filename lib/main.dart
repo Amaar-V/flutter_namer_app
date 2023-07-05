@@ -25,8 +25,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// MyAppState:
-/// generates WordPairs and saves them if favorited
+/// Generates WordPairs and saves them if favorited.
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
 
@@ -47,20 +46,20 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
+/// Allows for a page changing navigation rail and the main page.
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-/// _MyHomePageState:
-/// Allows for a page changing navigation rail and the main page
 class _MyHomePageState extends State<MyHomePage> {
   var selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     Widget page;
-    switch (selectedIndex) { // functionality for page navigation
+    // functionality for page navigation based on [selectedIndex]
+    switch (selectedIndex) {
       case 0:
         page = GeneratorPage();
         break;
@@ -79,11 +78,13 @@ class _MyHomePageState extends State<MyHomePage> {
               child: NavigationRail(
                 extended: constraints.maxWidth >= 600,
                 destinations: [
-                  NavigationRailDestination( // navigation to generation page
+                  // navigation to generation page
+                  NavigationRailDestination(
                     icon: Icon(Icons.home),
                     label: Text('Home'),
                   ),
-                  NavigationRailDestination( // navigation to favorites page
+                  // navigation to favorites page
+                  NavigationRailDestination(
                     icon: Icon(Icons.favorite),
                     label: Text('Favorites'),
                   ),
@@ -109,9 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-/// GeneratorPage:
-/// The default page, displays and generates WordPairs
-/// Also allows for toggle favoriting of terms
+/// The default page, displays and generates WordPairs.
+/// Allows for toggle favoriting of terms.
 class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -130,19 +130,22 @@ class GeneratorPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BigCard(pair: pair), // generated term
-          SizedBox( // padding
+          SizedBox(
+            // padding
             height: 10,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton.icon( // favorite button
+              ElevatedButton.icon(
+                  // favorite button
                   onPressed: () {
                     appState.toggleFavorite();
                   },
                   icon: Icon(icon),
                   label: Text('Like')),
-              ElevatedButton( // generation button
+              ElevatedButton(
+                // generation button
                 onPressed: () {
                   appState.getNext();
                 },
@@ -156,24 +159,24 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
+/// The favorites page where favorited terms are shown as a list.
 class FavoritesPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _FavoritesPageState();
 }
 
-/// _FavoritesPageState:
-/// The favorites page where favorited terms are shown as a list
 class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var favs = appState.favorites;
     final theme = Theme.of(context);
- 
+
     if (favs.isEmpty) {
       return Center(
-        child: Text('No favorites yet.', 
-        style: TextStyle(color:theme.colorScheme.primary),
+        child: Text(
+          'No favorites yet.',
+          style: TextStyle(color: theme.colorScheme.primary),
         ),
       );
     }
@@ -182,23 +185,25 @@ class _FavoritesPageState extends State<FavoritesPage> {
       children: [
         Padding(
           padding: const EdgeInsets.all(20),
-          child: Text('You have '
-              '${favs.length} favorites:',
-              style: TextStyle(color:theme.colorScheme.primary),
-              ),
+          child: Text(
+            'You have '
+            '${favs.length} favorites:',
+            style: TextStyle(color: theme.colorScheme.primary),
+          ),
         ),
         for (var pair in favs)
           ListTile(
             leading: Icon(Icons.favorite),
-            title: Text(pair.asLowerCase,),
+            title: Text(
+              pair.asLowerCase,
+            ),
           ),
       ],
     );
   }
 }
 
-/// BigCard:
-/// Widget used to create Cards that are used to display WordPairs
+/// Widget used to create Cards that are used to display WordPairs.
 class BigCard extends StatelessWidget {
   const BigCard({
     super.key,
